@@ -1,0 +1,16 @@
+__pycache__
+.vscode
+.Python
+[Bb]in
+[Ii]nclude
+[Ll]ib
+[Ll]ib64
+[Ll]ocal
+[Ss]cripts
+pyvenv.cfg
+.venv
+pip-selfcheck.json
+.ipynb_checkpoints
+*.zip
+audio
+*.log
