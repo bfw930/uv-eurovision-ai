@@ -11,6 +11,12 @@ scipy = "*"
 matplotlib = "*"
 torch = "*"
 umap = "*"
+ipykernel = "*"
+ipympl = "*"
+librosa = "*"
+pandas = "*"
+scikit-learn = "*"
+transformers = "*"
 
 [requires]
 python_version = "3.8"
