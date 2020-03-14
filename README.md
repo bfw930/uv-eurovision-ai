@@ -2,6 +2,9 @@
 # Eurovision AI - Uncanny Valley entry
 
 
-## Deps:
+##  repo layout
 
-    using pipenv to manage venv and pip libs, see ./Pipfile
+
+## deps
+
+using python 3.8 with pipenv to manage venv / pip: see ./Pipfile (or requirements.txt)
