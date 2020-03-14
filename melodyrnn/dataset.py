@@ -19,7 +19,7 @@ class MelodyDataset(torch.utils.data.Dataset):
 
     ''' dataset class for midi files '''
 
-    def __init__(self, dir_path: str):
+    def __init__(self, dir_path: str, key: str = 'C'):
 
         ''' init dataset, import midi files '''
 
@@ -35,7 +35,8 @@ class MelodyDataset(torch.utils.data.Dataset):
 
         # get index for only midi with meta plus [melody, chords, bass] tracks
         j = [ i for i in range(len(self.file_names))
-                if len(self.midi_files[i].tracks) > 3 ]
+                if len(self.midi_files[i].tracks) > 3
+                and "key='{}'".format(key) in str(self.midi_files[i].tracks[0][2]) ]
 
         # filter midi file and file name lists
         self.midi_files = [ self.midi_files[i] for i in j ]
