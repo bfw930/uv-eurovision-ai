@@ -16,6 +16,8 @@ midi2stress.py takes a midicsv file (https://www.fourmilab.ch/webtools/midicsv/)
 
 It ignores all track information, processing events in the sequence read.
 
+midi2xml.py converts midicsv format MIDI data to xml. It ignores all track info, assumes there is no bar information (as in the case of our generated midi melodies), so puts everything into a single bar.
+
 midistats.py reports number of notes and average pitch, with midicsv file as input
 
 normaliseOctave.py reduces extreme average pitch to something in the more singable range. It was used as postprocessing to produce more realistic output from sinsy.
