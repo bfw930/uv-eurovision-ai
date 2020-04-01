@@ -34,4 +34,7 @@ outputs the cmudict stress syllables of the lyric input text file. Out of dictio
 # text2syllables.py 
 is a buggy syllabifier, that turns text input into syllables using "- " to separate syllables. eg. "forever" becomes "for- e- ver". This version still has major bugs, in that it not only incorrectly syllabifies, it loses letters. Use at your own risk!
 
+# transposetoC.py
+Transposes a midicsv file to C major/A minor, based on key signature events.
+
 
