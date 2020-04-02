@@ -19,54 +19,80 @@ class MelodyDataset(torch.utils.data.Dataset):
 
     ''' dataset class for midi files '''
 
-    def __init__(self, dir_path: str, key: str = 'C'):
+    def __init__(self, dir_path: str, cache = False, ds: int = 20):
 
         ''' init dataset, import midi files '''
 
         super().__init__()
 
+        # store downsampling factor
+        self.ds = ds
+
         # get and store list midi files in directory
-        self.file_names = [ name for name in os.listdir(dir_path) if name[-4:] == 'midi' ]
+        self.file_names = [ name for name in os.listdir(dir_path) if 'mid' in name[-4:] ]
 
         # import and store midi files
         self.midi_files = [ MidiFile(os.path.join(dir_path, file_name))
                 for file_name in self.file_names ]
 
 
-        # get index for only midi with meta plus [melody, chords, bass] tracks
-        j = [ i for i in range(len(self.file_names))
-                if len(self.midi_files[i].tracks) > 3
-                and "key='{}'".format(key) in str(self.midi_files[i].tracks[0][2]) ]
+        # case filter by key
+        if False:
 
-        # filter midi file and file name lists
-        self.midi_files = [ self.midi_files[i] for i in j ]
-        self.file_names = [ self.file_names[i] for i in j ]
+            # get index for only midi with meta plus [melody, chords, bass] tracks
+            j = [ i for i in range(len(self.file_names))
+                    if len(self.midi_files[i].tracks) > 3
+                    and "key='{}'".format(key) in str(self.midi_files[i].tracks[0][2]) ]
+
+
+        if False:
+
+            # get index for only midi with meta plus [melody, chords, bass] tracks
+            j = [ i for i in range(len(self.file_names))
+                    if len(self.midi_files[i].tracks) > 3 ]
+
+            # filter midi file and file name lists
+            self.midi_files = [ self.midi_files[i] for i in j ]
+            self.file_names = [ self.file_names[i] for i in j ]
 
 
         # init store of import state
         self.import_list = [ None for _ in range(len(self.midi_files)) ]
 
 
-        if True:
+        # pre-cache all data
+        if cache:
 
+            # iterate through midi files
             for index in range(len(self.file_names)):
 
-                # get midi by index
-                midi = self.midi_files[index]
-
-                # get midi tracks
-                tracks = self.midi2tracks(midi)
-
-                # get note tracks matrix
-                matrix = self.tracks2matrix(tracks)
+                # import data to memory
+                self.import_data(index)
 
 
-                # get melody format from matrix
-                melody = self.matrix2melody(matrix)
+    def import_data(self, index):
 
-                # store matrix in import list
-                self.import_list[index] = melody
+        ''' import midi data to memory '''
 
+        # get midi by index
+        midi = self.midi_files[index]
+
+        # get midi tracks
+        tracks = self.midi2tracks(midi)
+
+        # get note tracks matrix
+        matrix = self.tracks2matrix(tracks)
+
+        # get melody format from matrix
+        melody = self.matrix2melody(matrix)
+
+
+        # downsample over time
+        melody = melody[::self.ds]
+
+
+        # store matrix in import list
+        self.import_list[index] = melody
 
 
     def midi2tracks(self, midi):
@@ -76,8 +102,14 @@ class MelodyDataset(torch.utils.data.Dataset):
         # initialise tracks list
         tracks = []
 
+        if len(midi.tracks) == 1:
+            ts = [0]
+        else:
+            ts = range(len(midi.tracks))[1:4]
+
         # iterate over tracks in midi (excl. meta track, extra), [melody, chords, bass]
-        for i in range(len(midi.tracks))[1:4]:
+        #for i in range(len(midi.tracks))[1:4]:
+        for i in ts:
 
             # store track data as dict for processing
             track = []
@@ -182,33 +214,15 @@ class MelodyDataset(torch.utils.data.Dataset):
         ''' return tracks note matrix '''
 
         # check for import state
-        if self.import_list[index] is not None:
+        if self.import_list[index] is None:
 
-            # return data if already imported
-            return self.import_list[index]
-
-
-        # get midi by index
-        midi = self.midi_files[index]
-
-        # get midi tracks
-        tracks = self.midi2tracks(midi)
-
-        # get note tracks matrix
-        matrix = self.tracks2matrix(tracks)
+            # import data to memory
+            self.import_data(index)
 
 
-        # get melody format from matrix
-        melody = self.matrix2melody(matrix)
+        # return data if already imported
+        return self.import_list[index]
 
-        # store matrix in import list
-        self.import_list[index] = melody
-
-        ## may need to pad melody len before return
-
-
-        # return matrix as tensor
-        return melody
 
         '''
         def linear_quantize(samples, q_levels):

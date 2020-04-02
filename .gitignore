@@ -13,6 +13,9 @@
 # syncthing sync files, versioning
 **/.stfolder
 
+# old dev versions, local backup only
+**/archive
+
 
 ## repo specific entries
 
