@@ -47,6 +47,16 @@ melodyrnn: libs for modified sample-rnn model implimentation in pytorch; (furthe
 lyrics-transform: libs for slightly customised GTP-2 transformer model implimentation in pytorch
 
 
+#### ./stress/
+
+contains scripts written/edited by Uitdenbogerd to process MIDI files, and to generate stress strings that are used for matching melodies and lyrics
+
+
+#### ./mirt/
+
+contains code originally written for Uitdenbogerd's PhD work in melody matching, and subsequently used for MIREX entries
+
+
 ## melody-rnn
 
 generation of base melody samples used for track components, vocals aligned to lyrics; based on sample-rnn architecture however input quantisation translated to input direct 7-bit MIDI note input with softmax output per timestep used as MIDI note, zero as silence; training data comprised lead melody track from 200 track MIDI dataset.
